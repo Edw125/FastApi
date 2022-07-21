@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Задача</title>
+</head>
+    <body>
+        <h1>Сообщения</h1>
+            <div class="container">
+                <form action="" onsubmit="sendMessage(event)">
+                    <input type="text" id="messageText" autocomplete="off"/>
+                    <button>Отправить</button>
+                </form>
+            </div>
+                <p id="messages"></p>
+        <script>
+            var ws = new WebSocket("ws://localhost:8000/ws");
+            ws.onmessage = function(event) {
+                var messages = document.getElementById('messages');
+                var message = document.createElement('li');
+                let receiveJson = JSON.parse(event.data);
+                var content = document.createTextNode(receiveJson.Number + ". " + receiveJson.messageText);
+                message.appendChild(content);
+                messages.appendChild(message);
+                };
+            function sendMessage(event) {
+                var input = document.getElementById("messageText");
+                let message = {messageText: input.value};
+                let messageJson = JSON.stringify(message);
+                ws.send(messageJson);
+                input.value = "";
+                event.preventDefault();
+                }
+        </script>
+    </body>
+</html>
