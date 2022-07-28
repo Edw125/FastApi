@@ -22,7 +22,7 @@ class ConnectionManager:
         self.active_connections.remove(websocket)
 
     async def send_personal_message(self, message: str, websocket: WebSocket):
-        await websocket.send_text(message)
+        await websocket.send_json(message)
 
     async def broadcast(self, message: str):
         for connection in self.active_connections:
@@ -46,7 +46,7 @@ async def websocket_endpoint(websocket: WebSocket):
         try:
             data = await websocket.receive_json()
             data.update({"Number": str(count)})
-            await manager.broadcast(data)
+            await manager.send_personal_message(data, websocket)
             count += 1
         except Exception as e:
             print('error:', e)
