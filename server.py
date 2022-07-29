@@ -7,6 +7,7 @@ from starlette.templating import Jinja2Templates
 app = FastAPI(title='Example')
 templates = Jinja2Templates(directory="templates")
 
+
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse('home.html', {'request': request})
@@ -14,6 +15,7 @@ async def home(request: Request):
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
     print('Accepting client connection...')
     count = 1
     while True:
